@@ -4,5 +4,7 @@ import org.Bliss.dtos.request.RoomRequest;
 import org.Bliss.dtos.response.RoomResponse;
 
 public interface RoomServices {
-    RoomResponse createSender (RoomRequest roomRequest);
+    RoomResponse checkAvailability (RoomRequest roomRequest);
+    RoomResponse bookRoom (RoomRequest roomRequest);
+    RoomResponse updateRoomStatus (RoomRequest roomRequest);
 }
