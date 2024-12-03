@@ -12,9 +12,10 @@ import java.util.Date;
 public class Booking {
     @Id
     private long bookingId;
-    private long roomId;
-    private long userId;
+    private Room room;
+    private User user;
     private Date checkInDate;
     private Date checkOutDate;
     private BigDecimal price;
+    private BookingStatus status;
 }

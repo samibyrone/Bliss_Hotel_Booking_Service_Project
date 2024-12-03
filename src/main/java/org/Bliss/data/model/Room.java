@@ -10,9 +10,9 @@ import java.math.BigDecimal;
 @Data
 public class Room {
     @Id
-    private long roomId;
+    private String roomId;
     private String roomNumber;
-    private String roomType;
+    private RoomType roomType;
     private BigDecimal pricePerNight;
-    private String Status;
+    private RoomStatus Status;
 }
