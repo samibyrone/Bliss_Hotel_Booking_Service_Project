@@ -18,5 +18,6 @@ public class User {
     private String phoneNumber;
     private String password;
     private String role;
+    private UserType userType;
     private List<Booking> bookings = new ArrayList<>();
 }
