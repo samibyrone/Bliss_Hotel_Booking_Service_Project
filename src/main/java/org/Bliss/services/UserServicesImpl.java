@@ -21,11 +21,12 @@ public class UserServicesImpl implements UserServices {
         user.setLastName(userRequest.getLastName());
         user.setEmail(userRequest.getEmail());
         user.setPassword(userRequest.getPassword());
-        user.setRole("CUSTOMER");
+        user.setRole("CUSTOMER");//Remeber to set default role as customer
 
         User saveUser = userRepo.save(user);
 
         UserResponse userResponse = new UserResponse();
+        userResponse.setUserId(saveUser.getUserId());
         userResponse.setFirstName(saveUser.getFirstName());
         userResponse.setRole(saveUser.getRole());
         userResponse.setMessage("Registration successful");
@@ -42,6 +43,7 @@ public class UserServicesImpl implements UserServices {
         UserResponse userResponse = new UserResponse();
         userResponse.setFirstName(user.getFirstName());
         userResponse.setRole(user.getRole());
-
+        userResponse.setMessage("Login successful");
+        return userResponse;
     }
 }

@@ -4,5 +4,7 @@ import org.Bliss.dtos.request.BookingRequest;
 import org.Bliss.dtos.response.BookingResponse;
 
 public interface BookingService {
-    BookingResponse createSender (BookingRequest bookingRequest);
+    BookingResponse createBooking (BookingRequest bookingRequest);
+    BookingResponse cancelBooking (BookingRequest bookingRequest);
+    BookingResponse getBookingDetails (BookingRequest bookingRequest);
 }
