@@ -1,9 +1,6 @@
 package org.Bliss.services;
 
-import org.Bliss.data.model.Booking;
-import org.Bliss.data.model.Room;
-import org.Bliss.data.model.RoomStatus;
-import org.Bliss.data.model.RoomType;
+import org.Bliss.data.model.*;
 import org.Bliss.data.repositories.BookingRepo;
 import org.Bliss.data.repositories.RoomRepo;
 import org.Bliss.dtos.request.RoomRequest;
@@ -14,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class RoomServicesImpl implements RoomServices {
@@ -35,10 +33,10 @@ public class RoomServicesImpl implements RoomServices {
         for (Room room : availableRooms) {
             boolean isAvailable = true;
             List<Booking> bookings = bookingRepo.findByRoomAndCheckInDateLessThanEqualAndAndCheckOutDateGreaterThanEqual(room, checkInDate, checkOutDate);
-            if(!bookings.isEmpty()) {
+            if (!bookings.isEmpty()) {
                 isAvailable = false;
             }
-            if(isAvailable) {
+            if (isAvailable) {
                 filteredAvailableRooms.add(room);
             }
         }
@@ -49,15 +47,75 @@ public class RoomServicesImpl implements RoomServices {
 
     }
 
-    private List<Room> filter
-
-    @Override
-    public RoomResponse bookRoom(RoomRequest roomRequest) {
-        return null;
+    private List<Room> filterAvailableRooms(List<Room> availableRooms, Date checkInDate, Date checkOutDate) {
+        List<Room> filteredAvailableRooms = new ArrayList<>();
+        for (Room room : availableRooms) {
+            boolean isAvailable = true;
+            List<Booking> bookings = bookingRepo.findByRoomAndCheckInDateLessThanEqualAndAndCheckOutDateGreaterThanEqual(room, checkInDate, checkOutDate);
+            if (!bookings.isEmpty()) {
+                isAvailable = false;
+            }
+            if (isAvailable) {
+                filteredAvailableRooms.add(room);
+            }
+        }
+        return filteredAvailableRooms;
     }
 
     @Override
-    public RoomResponse updateRoomStatus(RoomRequest roomRequest) {
-        return null;
+    public RoomResponse bookRoom(RoomRequest roomRequest){
+        RoomType roomType = roomRequest.getRoomType();
+        Date checkInDate = roomRequest.getCheckInDate();
+        Date checkOutDate = roomRequest.getCheckOutDate();
+
+        List<Room> availableRooms = roomRepo.findAllByRoomTypeAndStatus(roomType, RoomStatus.AVAILABLE);
+        List<Room> filteredAvailableRooms = filterAvailableRooms(availableRooms, checkInDate, checkOutDate);
+        if(filteredAvailableRooms.isEmpty()){
+            RoomResponse roomResponse = new RoomResponse();
+            roomResponse.setMessage("No room available at the specified date");
+        }
+        for(Room room : filteredAvailableRooms){
+            if(room.getStatus() == RoomStatus.AVAILABLE){
+                room.setStatus(RoomStatus.UNAVAILABLE);
+                roomRepo.save(room);
+
+                Booking booking = new Booking();
+                booking.setRoom(room);
+                booking.setUser(new User());
+                booking.setCheckInDate(checkInDate);
+                booking.setCheckOutDate(checkOutDate);
+                bookingRepo.save(booking);
+                RoomResponse roomResponse = new RoomResponse();
+                roomResponse.setMessage("Room booked successfully");
+                return roomResponse;
+            }
+        }
+        RoomResponse roomResponse = new RoomResponse();
+        roomResponse.setMessage("Room not available at the specified date");
+        return roomResponse;
     }
+
+
+
+    @Override
+    public RoomResponse updateRoomStatus (RoomRequest roomRequest){
+        String roomId = roomRequest.getRoomId();
+
+        Optional<Room> optionalRoom = roomRepo.findById(roomId);
+        if(optionalRoom.isEmpty()){
+            RoomResponse roomResponse = new RoomResponse();
+            roomResponse.setMessage("Room not found");
+            return roomResponse;
+        }
+
+        Room roomToUpdate = optionalRoom.get();
+        RoomStatus newStatus = roomRequest.getNewStatus();
+        roomToUpdate.setStatus(newStatus);
+        roomRepo.save(roomToUpdate);
+
+        RoomResponse roomResponse = new RoomResponse();
+        roomResponse.setMessage("Room updated successfully");
+        return roomResponse;
+    }
+
 }

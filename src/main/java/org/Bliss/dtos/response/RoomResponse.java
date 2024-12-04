@@ -8,5 +8,6 @@ import java.util.List;
 public class RoomResponse {
     private List<Room> availableRooms;
     private String message;
+    private Room bookedRoom;
 
 }
