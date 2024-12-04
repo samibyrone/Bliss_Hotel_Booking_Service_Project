@@ -14,5 +14,5 @@ public class Room {
     private String roomNumber;
     private RoomType roomType;
     private BigDecimal pricePerNight;
-    private RoomStatus Status;
+    private RoomStatus status;
 }

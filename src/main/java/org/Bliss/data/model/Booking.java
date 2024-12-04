@@ -18,4 +18,6 @@ public class Booking {
     private Date checkOutDate;
     private BigDecimal price;
     private BookingStatus status;
+
+
 }

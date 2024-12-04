@@ -8,36 +8,81 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 @SpringBootTest
+@ActiveProfiles("test")
 public class UserServicesImplTest {
+    @Autowired
+    private UserRepo userRepo;
+    @Autowired
+    private UserServicesImpl userServicesImpl;
 
-        @Autowired
-        private UserRepo userRepo;
-        @Autowired
-        private UserServicesImpl userServices;
-        @BeforeEach
-        public void setUp() {
-            userRepo.deleteAll();
-        }
+    @BeforeEach
+    public void setUp() {
+        userRepo.deleteAll();
+    }
 
-        @Test
-        public void testToRegisterUser() {
-            UserRequest user = new UserRequest();
-            user.setFirstName("Clinton");
-            user.setLastName("Ayaode");
-            user.setEmail("clinton@gmail.com");
-            user.setPassword("password");
+    @Test
+    public void testToRegisterUser() {
+        UserRequest user = new UserRequest();
+        user.setFirstName("John");
+        user.setLastName("Doe");
+        user.setEmail("john@doe.com");
+        user.setPassword("password");
+        user.setRole("CUSTOMER");
 
-            UserResponse userResponse = userServices.register(user);
+        UserResponse savedUser = userServicesImpl.register(user);
+        assertEquals("John", savedUser.getFirstName());
+        assertEquals("CUSTOMER", savedUser.getRole());
+    }
 
-            assertEquals("Clinton", userResponse.getFirstName());
-            assertEquals("CUSTOMER", userResponse.getRole());
-            assertEquals("Registration successful", userResponse.getMessage());
+    @Test
+    public void testLoginRegisteredUser() {
+        User user = new User();
+        user.setFirstName("John");
+        user.setLastName("Doe");
+        user.setEmail("john@doe.com");
+        user.setPassword("password");
+        user.setRole("CUSTOMER");
+        userRepo.save(user);
 
-        }
+        UserRequest userRequest = new UserRequest();
+        userRequest.setEmail("john@doe.com");
+        userRequest.setPassword("password");
 
+        UserResponse userResponse = userServicesImpl.login(userRequest);
+        assertEquals("John", userResponse.getFirstName());
+        assertEquals("CUSTOMER", userResponse.getRole());
+        assertEquals("Login successful", userResponse.getMessage());
+    }
+
+    @Test
+    public void testLoginUserWithWrongPassword() {
+        User user = new User();
+        user.setFirstName("John");
+        user.setLastName("Doe");
+        user.setEmail("john@doe.com");
+        user.setPassword("password");
+        user.setRole("CUSTOMER");
+        userRepo.save(user);
+
+        UserRequest userRequest = new UserRequest();
+        userRequest.setEmail("john@doe.com");
+        userRequest.setPassword("wrongpassword");
+        Exception exception = assertThrows(Exception.class, () -> userServicesImpl.login(userRequest));
+        assertEquals("Wrong password", exception.getMessage());
+    }
+
+    @Test
+    public void testLoginUserWithWrongEmail() {
+        UserRequest userRequest = new UserRequest();
+        userRequest.setEmail("john@doe.com");
+        userRequest.setPassword("password");
+
+        Exception exception = assertThrows(Exception.class, () -> userServicesImpl.login(userRequest));
+        assertEquals("User with email john@doe.com not found", exception.getMessage());
+    }
 }
