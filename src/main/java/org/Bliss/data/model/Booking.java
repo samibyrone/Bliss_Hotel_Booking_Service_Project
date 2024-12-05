@@ -11,7 +11,7 @@ import java.util.Date;
 @Document
 public class Booking {
     @Id
-    private long bookingId;
+    private String bookingId;
     private Room room;
     private User user;
     private Date checkInDate;

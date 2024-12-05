@@ -11,7 +11,7 @@ import java.util.List;
 @Data
 public class User {
     @Id
-    private long userId;
+    private String userId;
     private String firstName;
     private String lastName;
     private String email;
@@ -19,5 +19,5 @@ public class User {
     private String password;
     private String role;
     private UserType userType;
-    private List<Booking> bookings = new ArrayList<>();
+//    private List<Booking> bookings = new ArrayList<>();
 }

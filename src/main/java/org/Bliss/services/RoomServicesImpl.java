@@ -32,7 +32,7 @@ public class RoomServicesImpl implements RoomServices {
         List<Room> filteredAvailableRooms = new ArrayList<>();
         for (Room room : availableRooms) {
             boolean isAvailable = true;
-            List<Booking> bookings = bookingRepo.findByRoomAndCheckInDateLessThanEqualAndAndCheckOutDateGreaterThanEqual(room, checkInDate, checkOutDate);
+            List<Booking> bookings = bookingRepo.findByRoomAndCheckInDateLessThanEqualAndCheckOutDateGreaterThanEqual(room, checkInDate, checkOutDate);
             if (!bookings.isEmpty()) {
                 isAvailable = false;
             }
@@ -51,7 +51,7 @@ public class RoomServicesImpl implements RoomServices {
         List<Room> filteredAvailableRooms = new ArrayList<>();
         for (Room room : availableRooms) {
             boolean isAvailable = true;
-            List<Booking> bookings = bookingRepo.findByRoomAndCheckInDateLessThanEqualAndAndCheckOutDateGreaterThanEqual(room, checkInDate, checkOutDate);
+            List<Booking> bookings = bookingRepo.findByRoomAndCheckInDateLessThanEqualAndCheckOutDateGreaterThanEqual(room, checkInDate, checkOutDate);
             if (!bookings.isEmpty()) {
                 isAvailable = false;
             }

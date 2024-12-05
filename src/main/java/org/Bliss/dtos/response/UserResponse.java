@@ -9,5 +9,5 @@ public class UserResponse {
     private String role;
     private String email;
     private String message;
-    private long userId;
+    private String userId;
 }

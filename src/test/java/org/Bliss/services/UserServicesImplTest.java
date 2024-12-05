@@ -71,7 +71,7 @@ public class UserServicesImplTest {
 
         UserRequest userRequest = new UserRequest();
         userRequest.setEmail("john@doe.com");
-        userRequest.setPassword("wrongpassword");
+        userRequest.setPassword("wrongPassword");
         Exception exception = assertThrows(Exception.class, () -> userServicesImpl.login(userRequest));
         assertEquals("Wrong password", exception.getMessage());
     }
